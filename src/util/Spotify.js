@@ -8,22 +8,39 @@ const Spotify = {
     getAccessToken() {
         if (accessToken) {
             return accessToken;
+        }
+
+        const accessTokenUrl = window.location.href.match(/access_token=([^&]*)/);
+        const expiresIn = window.location.href.match(/expires_in=([^&]*)/);
+        if (accessTokenUrl && expiresIn) {
+            accessToken = accessTokenUrl.toString().split("=")[1];
+            expired = expiresIn[1];
+            console.log("Test: "+window.location.href);
+            window.setTimeout(() => accessToken = '', expired * 1000);
+            window.history.pushState('Access Token', null, '/');
+            console.log("Access Token: " + accessToken);
+            console.log("Expired: " + expired + "expiresIn: "+expiresIn);
         } else {
             window.location = spotifyUrl;
-            const accessTokenUrl = window.location.href.match(/access_token=([^&]*)/);
-            const expiresIn = window.location.href.match(/expires_in=([^&]*)/);
-            accessToken = accessTokenUrl.toString().split("=")[1];
-            expired = expiresIn.toString().split("=")[1];
-            console.log("Access Token: " + accessToken);
         }
+
     },
 
     search(term) {
-        fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
-            headers: {Authorization: `Bearer${accessToken}`}
+        console.log('Search Bearer: '+accessToken);
+        return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+            headers: {Authorization: `Bearer ${accessToken}`}
         }).then((response) => { return response.json()})
             .then((resJson) => {
-
+                return resJson.tracks.items.map((track) => {
+                    return {
+                        id: track.id,
+                        name: track.name,
+                        artist: track.artists[0].name,
+                        album: track.album.name,
+                        uri: track.uri
+                    }
+                });
             });
     }
 };

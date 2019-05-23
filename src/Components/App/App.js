@@ -3,7 +3,7 @@ import './App.css';
 import { SearchResults } from "../SearchResults/SearchResults";
 import { Playlist } from "../Playlist/Playlist";
 import { SearchBar } from "../SearchBar/SearchBar";
-const {Spotify} = require('../../util/Spotify');
+const { Spotify } = require('../../util/Spotify');
 
 Spotify.getAccessToken();
 
@@ -26,12 +26,6 @@ class App extends React.Component {
     this.savePlaylist = this.savePlaylist.bind(this);
     this.search = this.search.bind(this);
   }
-
-  /*
-  componentDidMount() {
-    Spotify.getAccessToken();
-  }
-  */
 
   addTrack(track) {
     if (!this.state.playlistTracks.find((savedTrack) => {return savedTrack.id === track.id})) {
@@ -65,10 +59,19 @@ class App extends React.Component {
   }
 
   search(searchTerm) {
-    console.log(searchTerm);
+      Spotify.search(searchTerm).then((res) => {
+          console.log(res);
+          return this.setState({
+              SearchResults: res
+          });
+      });
   }
 
-  render() {
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+      return this.state.SearchResults !== nextState.SearchResults;
+  }
+
+    render() {
     return (
         <div>
           <h1>Ja<span className="highlight">mmm</span>ing</h1>
