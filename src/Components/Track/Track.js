@@ -9,8 +9,8 @@ export class Track extends React.Component {
         this.renderAction = this.renderAction.bind(this);
     }
 
-    addTrack(ev) {
-        this.props.onAdd(ev.target.value);
+    addTrack() {
+        this.props.onAdd(this.props.track);
     }
 
     removeTrack() {
@@ -38,7 +38,7 @@ export class Track extends React.Component {
                     <p>{/* <!-- track artist will go here --> | <!--
                      track album will go here --> */}{this.props.artist} | {this.props.album}</p>
                 </div>
-                <button className="Track-action">{/* <!-- + or - will go here --> */}{this.renderAction()}</button>
+                {this.renderAction()}
             </div>
         );
     }
