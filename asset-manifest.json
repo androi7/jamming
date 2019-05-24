@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/jamming/static/css/main.7fc66ca5.chunk.css",
-    "main.js": "/jamming/static/js/main.bb25dcaf.chunk.js",
-    "main.js.map": "/jamming/static/js/main.bb25dcaf.chunk.js.map",
+    "main.js": "/jamming/static/js/main.688bab90.chunk.js",
+    "main.js.map": "/jamming/static/js/main.688bab90.chunk.js.map",
     "runtime~main.js": "/jamming/static/js/runtime~main.6e9a7a58.js",
     "runtime~main.js.map": "/jamming/static/js/runtime~main.6e9a7a58.js.map",
     "static/js/2.0e9fa92a.chunk.js": "/jamming/static/js/2.0e9fa92a.chunk.js",
     "static/js/2.0e9fa92a.chunk.js.map": "/jamming/static/js/2.0e9fa92a.chunk.js.map",
     "index.html": "/jamming/index.html",
-    "precache-manifest.378f6452110ff9efb50ff7895503decb.js": "/jamming/precache-manifest.378f6452110ff9efb50ff7895503decb.js",
+    "precache-manifest.8c6a536b086e2a8d5a0474a0e54e00ec.js": "/jamming/precache-manifest.8c6a536b086e2a8d5a0474a0e54e00ec.js",
     "service-worker.js": "/jamming/service-worker.js",
     "static/css/main.7fc66ca5.chunk.css.map": "/jamming/static/css/main.7fc66ca5.chunk.css.map",
     "static/media/App.css": "/jamming/static/media/background_photo_desktop.37be7357.jpg"
