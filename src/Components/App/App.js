@@ -57,6 +57,7 @@ class App extends React.Component {
   }
 
   savePlaylist() {
+    console.log(this.state.playlistTracks.uri);
     Spotify.savePlaylist(this.state.playlistName, this.state.playlistTracks.uri);
   }
 

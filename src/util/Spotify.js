@@ -1,36 +1,59 @@
+const promisify = require('util.promisify');
 
-const Spotify = {
-    client_id: '7955f14ccbde43e296449c75b89f4022',
-    redirect_uri: 'http://localhost:3000/',
-    spotifyUrl: `https://accounts.spotify.com/authorize?client_id=${client_id}&scope=playlist-modify-public&redirect_uri=${redirect_uri}&response_type=token`,
-    accessToken: '',
-    expired: '',
+const Spotify = (function() {
+    const client_id = '7955f14ccbde43e296449c75b89f4022';
+    const redirect_uri = 'http://localhost:3000/';
+    const spotifyUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&scope=playlist-modify-public&redirect_uri=${redirect_uri}&response_type=token`;
+    let accessToken = '';
+    let expired = '';
 
-    getAccessToken() {
-        if (this.accessToken) {
-            return this.accessToken;
+    function getAccessToken() {
+        if (accessToken) {
+            return accessToken;
         }
 
         const accessTokenUrl = window.location.href.match(/access_token=([^&]*)/);
         const expiresIn = window.location.href.match(/expires_in=([^&]*)/);
         if (accessTokenUrl && expiresIn) {
-            this.accessToken = accessTokenUrl.toString().split("=")[1];
-            this.expired = expiresIn[1];
+            accessToken = accessTokenUrl.toString().split("=")[1];
+            expired = expiresIn[1];
             console.log("Test: "+window.location.href);
-            window.setTimeout(() => this.accessToken = '', this.expired * 1000);
+            const expiring = promisify(setTimeout);
+            expiring(expired * 1000).then(() => accessToken = '');
+            //window.setTimeout(() => accessToken = '', expired * 1000);
             window.history.pushState('Access Token', null, '/');
-            console.log("Access Token: " + this.accessToken);
-            console.log("Expired: " + this.expired + "expiresIn: "+expiresIn);
+            console.log("Access Token: " + accessToken);
+            console.log("Expired: " + expired + "expiresIn: "+expiresIn);
         } else {
-            window.location = this.spotifyUrl;
+            window.location = spotifyUrl;
         }
 
-    },
+    }
 
-    search(term) {
-        console.log('Search Bearer: '+ this.accessToken);
+    async function search(term) {
+        console.log('Search Bearer: '+ accessToken);
+        try {
+            const response = await fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
+                                        headers: {Authorization: `Bearer ${accessToken}`}
+            });
+            if (response.ok) {
+                const jsonResponse = await response.json();
+                return jsonResponse.tracks.items.map((track) => {
+                    return {
+                        id: track.id,
+                        name: track.name,
+                        artist: track.artists[0].name,
+                        album: track.album.name,
+                        uri: track.uri
+                    }
+                });
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        /*
         return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
-            headers: {Authorization: `Bearer ${this.accessToken}`}
+            headers: {Authorization: `Bearer ${accessToken}`}
         }).then((response) => { return response.json()})
             .then((resJson) => {
                 return resJson.tracks.items.map((track) => {
@@ -43,16 +66,17 @@ const Spotify = {
                     }
                 });
             });
-    },
+            */
+    }
 
-    savePlaylist(playlist, trackURIs) {
+    function savePlaylist(playlist, trackURIs) {
         console.log(trackURIs);
         if (!(playlist && trackURIs)) {
             return;
         }
 
         const headerAuth = {
-            'Authorization': `Bearer ${this.accessToken}`,
+            'Authorization': `Bearer ${accessToken}`,
             'Content-Type': 'application/json'
         };
         let userId = '';
@@ -125,6 +149,12 @@ const Spotify = {
         })();
     }
 
-};
+    return {
+        getAccessToken: getAccessToken,
+        search: search,
+        savePlaylist: savePlaylist
+    };
+
+}());
 
 module.exports = { Spotify };
