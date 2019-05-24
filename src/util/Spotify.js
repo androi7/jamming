@@ -1,6 +1,6 @@
 const Spotify = (function() {
     const client_id = '7955f14ccbde43e296449c75b89f4022';
-    const redirect_uri = 'https://androi7.github.io/jamming/'; //http://localhost:3000/
+    const redirect_uri = 'https://androi7.github.io/jamming/public/'; //http://localhost:3000/
     const spotifyUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&scope=playlist-modify-public&redirect_uri=${redirect_uri}&response_type=token`;
     let accessToken = '';
     let expired = '';
