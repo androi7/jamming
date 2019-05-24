@@ -157,6 +157,4 @@ const Spotify = (function() {
 
 }());
 
-module.exports = {
-    Spotify: Spotify
-};
+module.exports = Spotify;
