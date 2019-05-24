@@ -3,7 +3,7 @@ import './App.css';
 import { SearchResults } from "../SearchResults/SearchResults";
 import { Playlist } from "../Playlist/Playlist";
 import { SearchBar } from "../SearchBar/SearchBar";
-const { Spotify } = require('../../util/Spotify');
+const Spotify = require('../../util/Spotify');
 
 Spotify.getAccessToken();
 
