@@ -11,13 +11,15 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchResults: [{name: 'Hungry - Remix', artist: 'Niklas Ibach', album: 'unknown', id: 5},
-        {name: 'Prayer in C', artist: 'Lilly Wood & The Pricks', album: 'cool', id: 6}],
-      playlistName: 'chill',
-      playlistTracks: [{name: 'Follow you', artist: 'twocolors', album: 'unknown', id: 1},
+      /*searchResults: [{name: 'Hungry - Remix', artist: 'Niklas Ibach', album: 'unknown', id: 5},
+        {name: 'Prayer in C', artist: 'Lilly Wood & The Pricks', album: 'cool', id: 6}],*/
+      searchResults: [],
+      playlistName: 'New Playlist',
+      playlistTracks: []
+      /*playlistTracks: [{name: 'Follow you', artist: 'twocolors', album: 'unknown', id: 1},
                        {name: 'Fade', artist: 'Alan Walker', album: 'Best', id: 2},
                        {name: 'Under the Sun', artist: 'Miskeyz', album: 'unknown', id: 3},
-                       {name: 'To California', artist: 'J Lisk', album: 'anything', id: 4}]
+                       {name: 'To California', artist: 'J Lisk', album: 'anything', id: 4}]*/
     };
 
     this.addTrack = this.addTrack.bind(this);
@@ -30,7 +32,7 @@ class App extends React.Component {
   addTrack(track) {
     if (!this.state.playlistTracks.find((savedTrack) => {return savedTrack.id === track.id})) {
       let newPlaylistTracks = this.state.playlistTracks;
-      newPlaylistTracks.push({name: track.name, artist: track.artist, album: track.album, id: track.id});
+      newPlaylistTracks.push({name: track.name, artist: track.artist, album: track.album, id: track.id, uri: track.uri});
       this.setState({
         playlistTracks: newPlaylistTracks
       });
@@ -55,23 +57,19 @@ class App extends React.Component {
   }
 
   savePlaylist() {
-    let trackURIs = [];
+    Spotify.savePlaylist(this.state.playlistName, this.state.playlistTracks.uri);
   }
 
   search(searchTerm) {
       Spotify.search(searchTerm).then((res) => {
           console.log(res);
-          return this.setState({
-              SearchResults: res
+          this.setState({
+              searchResults: res
           });
       });
   }
 
-  shouldComponentUpdate(nextProps, nextState, nextContext) {
-      return this.state.SearchResults !== nextState.SearchResults;
-  }
-
-    render() {
+  render() {
     return (
         <div>
           <h1>Ja<span className="highlight">mmm</span>ing</h1>
