@@ -1,5 +1,3 @@
-const promisify = require('util.promisify');
-
 const Spotify = (function() {
     const client_id = '7955f14ccbde43e296449c75b89f4022';
     const redirect_uri = 'http://localhost:3000/';
@@ -18,8 +16,10 @@ const Spotify = (function() {
             accessToken = accessTokenUrl.toString().split("=")[1];
             expired = expiresIn[1];
             console.log("Test: "+window.location.href);
-            const expiring = promisify(setTimeout);
-            expiring(expired * 1000).then(() => accessToken = '');
+            (async () => {
+                await new Promise(r => setTimeout(r, expired*1000));
+                accessToken = '';
+            })();
             //window.setTimeout(() => accessToken = '', expired * 1000);
             window.history.pushState('Access Token', null, '/');
             console.log("Access Token: " + accessToken);
