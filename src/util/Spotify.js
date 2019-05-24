@@ -1,35 +1,36 @@
-const client_id = '7955f14ccbde43e296449c75b89f4022';
-const redirect_uri = 'http://localhost:3000/';
-const spotifyUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&scope=playlist-modify-public&redirect_uri=${redirect_uri}&response_type=token`;
-let accessToken = '';
-let expired = '';
 
 const Spotify = {
+    client_id: '7955f14ccbde43e296449c75b89f4022',
+    redirect_uri: 'http://localhost:3000/',
+    spotifyUrl: `https://accounts.spotify.com/authorize?client_id=${client_id}&scope=playlist-modify-public&redirect_uri=${redirect_uri}&response_type=token`,
+    accessToken: '',
+    expired: '',
+
     getAccessToken() {
-        if (accessToken) {
-            return accessToken;
+        if (this.accessToken) {
+            return this.accessToken;
         }
 
         const accessTokenUrl = window.location.href.match(/access_token=([^&]*)/);
         const expiresIn = window.location.href.match(/expires_in=([^&]*)/);
         if (accessTokenUrl && expiresIn) {
-            accessToken = accessTokenUrl.toString().split("=")[1];
-            expired = expiresIn[1];
+            this.accessToken = accessTokenUrl.toString().split("=")[1];
+            this.expired = expiresIn[1];
             console.log("Test: "+window.location.href);
-            window.setTimeout(() => accessToken = '', expired * 1000);
+            window.setTimeout(() => this.accessToken = '', this.expired * 1000);
             window.history.pushState('Access Token', null, '/');
-            console.log("Access Token: " + accessToken);
-            console.log("Expired: " + expired + "expiresIn: "+expiresIn);
+            console.log("Access Token: " + this.accessToken);
+            console.log("Expired: " + this.expired + "expiresIn: "+expiresIn);
         } else {
-            window.location = spotifyUrl;
+            window.location = this.spotifyUrl;
         }
 
     },
 
     search(term) {
-        console.log('Search Bearer: '+accessToken);
+        console.log('Search Bearer: '+ this.accessToken);
         return fetch(`https://api.spotify.com/v1/search?type=track&q=${term}`, {
-            headers: {Authorization: `Bearer ${accessToken}`}
+            headers: {Authorization: `Bearer ${this.accessToken}`}
         }).then((response) => { return response.json()})
             .then((resJson) => {
                 return resJson.tracks.items.map((track) => {
@@ -51,7 +52,7 @@ const Spotify = {
         }
 
         const headerAuth = {
-            'Authorization': `Bearer ${accessToken}`,
+            'Authorization': `Bearer ${this.accessToken}`,
             'Content-Type': 'application/json'
         };
         let userId = '';
